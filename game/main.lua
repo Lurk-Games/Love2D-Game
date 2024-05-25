@@ -9,6 +9,8 @@ love.graphics.setDefaultFilter("nearest", "nearest")
 
 imageX = 500
 imageY = 300
+SettingsButX = 0
+SettingsButY = 0
 
 sound = love.audio.newSource("assets/SFX/mouseclick1.ogg", "static") -- the "static" is good for short sound effects
 --music = love.audio.newSource("techno.ogg", "stream") -- the "stream" is good for longer music tracks
@@ -69,12 +71,14 @@ function love.update(dt)
 
     -- Check if the mouse is over the image
     mouseOverImage = mouseX > imageX and mouseX < imageX + imageWidth and mouseY > imageY and mouseY < imageY + imageHeight
+
+    mouseOverSettings = mouseX > SettingsButX and mouseX < SettingsButX + imageWidthBut and mouseY > SettingsButY and mouseY < SettingsButY + imageHeightBut
 end
 
 -- Draw a coloured rectangle.
 function love.draw()
     love.graphics.setFont(font)
-    love.graphics.draw(background, 0,0,0,BGscaleX,BGscaleY)
+    love.graphics.draw(background, SettingsButX,SettingsButY,0,BGscaleX,BGscaleY)
     love.graphics.draw(image, imageX, imageY, 0, scaleX, scaleY)
     love.graphics.draw(button,0,0,0, ButscaleX, ButscaleY)
     love.graphics.print("Score: " .. score,400,0,0,1) -- (Text, PositionX, PositionY, Rotation, Size)
@@ -82,9 +86,13 @@ function love.draw()
 end
 
 function love.mousepressed(x, y, button, istouch)
-   if button == 1 and mouseOverImage then -- Versions prior to 0.10.0 use the MouseConstant 'l'
+   if button == 1 then -- Versions prior to 0.10.0 use the MouseConstant 'l'
+   if mouseOverImage then
         score = score + 1
         sound:play()
+    elseif mouseOverSettings then
+        sound:play()
+    end
    end
 end
 
