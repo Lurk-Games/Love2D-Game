@@ -8,9 +8,14 @@ loadScore()
 imageX = 300
 imageY = 300
 
-image = love.graphics.newImage("assets/images/logo.jpg")
+sound = love.audio.newSource("assets/SFX/mouseclick1.ogg", "static") -- the "static" is good for short sound effects
+--music = love.audio.newSource("techno.ogg", "stream") -- the "stream" is good for longer music tracks
+
+image = love.graphics.newImage("assets/images/planet03.png")
 background = love.graphics.newImage("assets/images/background.png")
+button = love.graphics.newImage("assets/images/Button.png")
 cursor = love.mouse.newCursor("assets/images/cursor.png", 0, 0)
+font = love.graphics.newFont("assets/font/Coffee Normal.ttf")
 
 -- Original dimensions of the image
     originalWidth = image:getWidth()
@@ -38,7 +43,6 @@ cursor = love.mouse.newCursor("assets/images/cursor.png", 0, 0)
 love.mouse.setCursor(cursor)
 
 love.window.setFullscreen(true, "desktop")
-
 end
 
 function love.quit()
@@ -56,14 +60,17 @@ end
 
 -- Draw a coloured rectangle.
 function love.draw()
+    love.graphics.setFont(font)
     love.graphics.draw(background, 0,0,0,BGscaleX,BGscaleY)
     love.graphics.draw(image, imageX, imageY, 0, scaleX, scaleY)
-    love.graphics.print("Score: " .. score,500,0)
+    love.graphics.draw(button,0,0,0,50,50)
+    love.graphics.print("Score: " .. score,500,0,0,2)
 end
 
 function love.mousepressed(x, y, button, istouch)
    if button == 1 and mouseOverImage then -- Versions prior to 0.10.0 use the MouseConstant 'l'
-      score = score + 1
+        score = score + 1
+        sound:play()
    end
 end
 
@@ -95,6 +102,7 @@ end
 
 
 function loadScore()
+    --Fucking loading system AAAAAAAAAHHHHHHHHHHHH
     if love.filesystem.getInfo(filename) then
         local contents, size = love.filesystem.read(filename)
         if contents then
