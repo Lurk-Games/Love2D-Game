@@ -7,7 +7,7 @@ loadScore()
 
 love.graphics.setDefaultFilter("nearest", "nearest")
 
-imageX = 300
+imageX = 500
 imageY = 300
 
 sound = love.audio.newSource("assets/SFX/mouseclick1.ogg", "static") -- the "static" is good for short sound effects
@@ -15,7 +15,6 @@ sound = love.audio.newSource("assets/SFX/mouseclick1.ogg", "static") -- the "sta
 
 image = love.graphics.newImage("assets/images/planet03.png")
 background = love.graphics.newImage("assets/images/background.png")
-VersionText = love.graphics.newImage("assets/images/VD.png")
 button = love.graphics.newImage("assets/images/Button.png")
 cursor = love.mouse.newCursor("assets/images/cursor.png", 0, 0)
 
@@ -78,8 +77,8 @@ function love.draw()
     love.graphics.draw(background, 0,0,0,BGscaleX,BGscaleY)
     love.graphics.draw(image, imageX, imageY, 0, scaleX, scaleY)
     love.graphics.draw(button,0,0,0, ButscaleX, ButscaleY)
-    love.graphics.draw(VersionText,0,600,0)
-    love.graphics.print("Score: " .. score,400,0,0,2) -- (Text, PositionX, PositionY, Rotation, Size)
+    love.graphics.print("Score: " .. score,400,0,0,1) -- (Text, PositionX, PositionY, Rotation, Size)
+    love.graphics.print("Version: Development",0,725,0,0.5) -- (Text, PositionX, PositionY, Rotation, Size)
 end
 
 function love.mousepressed(x, y, button, istouch)
