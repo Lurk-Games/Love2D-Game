@@ -13,9 +13,15 @@ sound = love.audio.newSource("assets/SFX/mouseclick1.ogg", "static") -- the "sta
 
 image = love.graphics.newImage("assets/images/planet03.png")
 background = love.graphics.newImage("assets/images/background.png")
+scoreText = love.graphics.newImage("assets/images/score.png")
+VersionText = love.graphics.newImage("assets/images/VD.png")
 button = love.graphics.newImage("assets/images/Button.png")
 cursor = love.mouse.newCursor("assets/images/cursor.png", 0, 0)
+
+--fonts
 font = love.graphics.newFont("assets/font/Coffee Normal.ttf")
+font2 = love.graphics.newFont("assets/font/Coffee Normal.otf")
+
 
 -- Original dimensions of the image
     originalWidth = image:getWidth()
@@ -23,22 +29,38 @@ font = love.graphics.newFont("assets/font/Coffee Normal.ttf")
 
     originalWidthBG = background:getWidth()
     originalHeightBG = background:getHeight()
+
+    originalWidthBut = button:getWidth()
+    originalHeightBut = button:getHeight()
+
+    originalWidthST = scoreText:getWidth()
+    originalHeightST = scoreText:getHeight()
     
     -- Desired dimensions for the image
     imageWidth = 200  -- Desired width
     imageHeight = 200  -- Desired height
 
-    -- Desired dimensions for the image
     imageWidthBG = 1500  -- Desired width
     imageHeightBG = 800  -- Desired height
+
+    imageWidthBut = 80  -- Desired width
+    imageHeightBut = 80  -- Desired height
+
+    imageWidthST = 150  -- Desired width
+    imageHeightST = 80  -- Desired height
     
     -- Calculate the scaling factors
     scaleX = imageWidth / originalWidth
     scaleY = imageHeight / originalHeight
 
-    -- Calculate the scaling factors
     BGscaleX = imageWidthBG / originalWidthBG
     BGscaleY = imageHeightBG / originalHeightBG
+
+    ButscaleX = imageWidthBut / originalWidthBut --HAHA BUTT
+    ButscaleY = imageHeightBut / originalHeightBut
+
+    STscaleX = imageWidthST / originalWidthST
+    STscaleY = imageHeightST / originalHeightST
 
 love.mouse.setCursor(cursor)
 
@@ -64,7 +86,9 @@ function love.draw()
     love.graphics.draw(background, 0,0,0,BGscaleX,BGscaleY)
     love.graphics.draw(image, imageX, imageY, 0, scaleX, scaleY)
     love.graphics.draw(button,0,0,0,50,50)
-    love.graphics.print("Score: " .. score,500,0,0,2)
+    love.graphics.draw(scoreText,400,-5,0,STscaleX,STscaleY)
+    love.graphics.draw(VersionText,0,600,0)
+    love.graphics.print(score,550,0,0,4)
 end
 
 function love.mousepressed(x, y, button, istouch)
