@@ -19,6 +19,28 @@ local draw_shop
 local game_keypressed
 local shop_keypressed
 
+-- Define the switch properties
+local switch = {
+    x = 100,
+    y = 100,
+    width = 60,
+    height = 30,
+    isOn = false
+}
+
+-- Define the slider properties
+local slider = {
+    x = 100,
+    y = 100,
+    width = 200,
+    height = 20,
+    handleRadius = 10,
+    handleX = 100,  -- Initial position of the handle
+    minValue = 0,   -- Minimum volume value
+    maxValue = 100, -- Maximum volume value
+    currentValue = 50 -- Initial volume value
+}
+
 function love.load()
     loadScore()
 
@@ -44,6 +66,7 @@ function love.load()
     ShopButtonX = -15
     ShopButtonY = 50
 
+    --Audio
     sound = love.audio.newSource("assets/SFX/mouseclick1.ogg", "static") -- the "static" is good for short sound effects
     -- music = love.audio.newSource("techno.ogg", "stream") -- the "stream" is good for longer music tracks
 
@@ -52,6 +75,7 @@ function love.load()
     button = love.graphics.newImage("assets/images/Button.png")
     cursor = love.mouse.newCursor("assets/images/cursor.png", 0, 0)
     ShopButton = love.graphics.newImage("assets/images/shop.png")
+    BuyButton = love.graphics.newImage("assets/images/Buy.png")
 
     -- Original dimensions of the image
     originalWidth = image:getWidth()
@@ -66,6 +90,9 @@ function love.load()
     originalWidthShop = ShopButton:getWidth()
     originalHeightShop = ShopButton:getHeight()
 
+    originalWidthBuy = BuyButton:getWidth()
+    originalHeightBuy = BuyButton:getHeight()
+
     -- Desired dimensions for the image
     imageWidth = 200  -- Desired width
     imageHeight = 200  -- Desired height
@@ -79,6 +106,9 @@ function love.load()
     imageWidthShop = 80  -- Desired width
     imageHeightShop = 80  -- Desired height
 
+    imageWidthBuy = 165  -- Desired width
+    imageHeightBuy = 50  -- Desired height
+
     -- Calculate the scaling factors
     scaleX = imageWidth / originalWidth
     scaleY = imageHeight / originalHeight
@@ -91,6 +121,9 @@ function love.load()
 
     ShopscaleX = imageWidthShop / originalWidthShop
     ShopscaleY = imageHeightShop / originalHeightShop
+
+    BuyscaleX = imageWidthBuy / originalWidthBuy
+    BuyscaleY = imageHeightBuy / originalHeightBuy
 
     love.mouse.setCursor(cursor)
 
@@ -114,6 +147,9 @@ function love.mousepressed(x, y, button, istouch)
                 sound:play()
             end
         end
+        if pointInsideRect(x, y, switch.x, switch.y, switch.width, switch.height) then
+                toggleSwitch()
+        end
     end
 end
 
@@ -130,6 +166,7 @@ function love.update(dt)
         mouseOverShop = mouseX > ShopButtonX and mouseX < ShopButtonX + imageWidthShop and mouseY > ShopButtonY and mouseY < ShopButtonY + imageHeightShop
     end
 end
+
 
 function love.draw()
     if game_state == 'menu' then
@@ -176,13 +213,27 @@ function draw_menu()
 end
 
 function draw_how_to_play()
-    love.graphics.printf(
-        "This is an upcoming menu, press Esc to go back to the 'menu' state",
-        0,
-        window_height / 2 - font_height / 2,
-        window_width,
-        'center'
-    )
+    -- Draw the switch background
+    love.graphics.setColor(0.5, 0.5, 0.5)
+    love.graphics.rectangle("fill", switch.x, switch.y, switch.width, switch.height, 5, 5)
+
+    -- Draw the switch handle based on its state
+    love.graphics.setColor(1, 1, 1)
+    if switch.isOn then
+        love.graphics.rectangle("fill", switch.x + switch.width - 30, switch.y + 5, 25, switch.height - 10, 5, 5)
+    else
+        love.graphics.rectangle("fill", switch.x + 5, switch.y + 5, 25, switch.height - 10, 5, 5)
+    end
+end
+
+-- Function to toggle the switch state
+function toggleSwitch()
+    switch.isOn = not switch.isOn
+end
+
+-- Function to check if a point is inside a rectangle
+function pointInsideRect(x, y, rx, ry, rw, rh)
+    return x >= rx and x <= rx + rw and y >= ry and y <= ry + rh
 end
 
 function draw_game()
@@ -195,13 +246,12 @@ function draw_game()
 end
 
 function draw_shop()
-    love.graphics.printf(
-        "This is the shop, press Esc to go back to the 'game' state",
-        0,
-        window_height / 2 - font_height / 2,
-        window_width,
-        'center'
-    )
+    love.graphics.setFont(font1)
+    love.graphics.draw(background, SettingsButX, SettingsButY, 0, BGscaleX, BGscaleY)
+    love.graphics.print(score .. " TP", 570, 0, 0, 1) -- (Text, PositionX, PositionY, Rotation, Size)
+    love.graphics.print("2x per click", 0,200,0,1)
+    love.graphics.draw(BuyButton,300,200,0,BuyscaleX,BuyscaleY)
+    love.graphics.print("500 TP", 500, 200,0,1)
 end
 
 function love.keypressed(key, scan_code, is_repeat)
