@@ -1,45 +1,21 @@
 local score = 0
 local filename = "score.txt"
+local scoreAddition = 1
+local version = "1.0(Unfinished)"
 
 local game_state = 'menu'
-local menus = { 'Play', 'Settings', 'Quit'}
-local GameMenus = {'Shop'}
+local menus = { 'Play', 'Quit'}
 local selected_menu_item = 1
 local window_width
 local window_height
 local font_height
 
+
 -- functions
 local draw_menu
 local menu_keypressed
-local draw_how_to_play
-local how_to_play_keypressed
 local draw_game
-local draw_shop
 local game_keypressed
-local shop_keypressed
-
--- Define the switch properties
-local switch = {
-    x = 100,
-    y = 100,
-    width = 60,
-    height = 30,
-    isOn = false
-}
-
--- Define the slider properties
-local slider = {
-    x = 100,
-    y = 100,
-    width = 200,
-    height = 20,
-    handleRadius = 10,
-    handleX = 100,  -- Initial position of the handle
-    minValue = 0,   -- Minimum volume value
-    maxValue = 100, -- Maximum volume value
-    currentValue = 50 -- Initial volume value
-}
 
 function love.load()
     loadScore()
@@ -59,12 +35,8 @@ function love.load()
 
     love.graphics.setDefaultFilter("nearest", "nearest")
 
-    imageX = 500
+    imageX = 550
     imageY = 300
-    SettingsButX = 0
-    SettingsButY = 0
-    ShopButtonX = -15
-    ShopButtonY = 50
 
     --Audio
     sound = love.audio.newSource("assets/SFX/mouseclick1.ogg", "static") -- the "static" is good for short sound effects
@@ -72,10 +44,7 @@ function love.load()
 
     image = love.graphics.newImage("assets/images/planet03.png")
     background = love.graphics.newImage("assets/images/background.png")
-    button = love.graphics.newImage("assets/images/Button.png")
     cursor = love.mouse.newCursor("assets/images/cursor.png", 0, 0)
-    ShopButton = love.graphics.newImage("assets/images/shop.png")
-    BuyButton = love.graphics.newImage("assets/images/Buy.png")
 
     -- Original dimensions of the image
     originalWidth = image:getWidth()
@@ -84,15 +53,6 @@ function love.load()
     originalWidthBG = background:getWidth()
     originalHeightBG = background:getHeight()
 
-    originalWidthBut = button:getWidth()
-    originalHeightBut = button:getHeight()
-
-    originalWidthShop = ShopButton:getWidth()
-    originalHeightShop = ShopButton:getHeight()
-
-    originalWidthBuy = BuyButton:getWidth()
-    originalHeightBuy = BuyButton:getHeight()
-
     -- Desired dimensions for the image
     imageWidth = 200  -- Desired width
     imageHeight = 200  -- Desired height
@@ -100,30 +60,12 @@ function love.load()
     imageWidthBG = 1500  -- Desired width
     imageHeightBG = 800  -- Desired height
 
-    imageWidthBut = 50  -- Desired width
-    imageHeightBut = 50  -- Desired height
-
-    imageWidthShop = 80  -- Desired width
-    imageHeightShop = 80  -- Desired height
-
-    imageWidthBuy = 165  -- Desired width
-    imageHeightBuy = 50  -- Desired height
-
     -- Calculate the scaling factors
     scaleX = imageWidth / originalWidth
     scaleY = imageHeight / originalHeight
 
     BGscaleX = imageWidthBG / originalWidthBG
     BGscaleY = imageHeightBG / originalHeightBG
-
-    ButscaleX = imageWidthBut / originalWidthBut
-    ButscaleY = imageHeightBut / originalHeightBut
-
-    ShopscaleX = imageWidthShop / originalWidthShop
-    ShopscaleY = imageHeightShop / originalHeightShop
-
-    BuyscaleX = imageWidthBuy / originalWidthBuy
-    BuyscaleY = imageHeightBuy / originalHeightBuy
 
     love.mouse.setCursor(cursor)
 
@@ -138,17 +80,9 @@ function love.mousepressed(x, y, button, istouch)
     if button == 1 then -- Versions prior to 0.10.0 use the MouseConstant 'l'
         if game_state == 'game' then
             if mouseOverImage then
-                score = score + 1
-                sound:play()
-            elseif mouseOverSettings then
-                sound:play()
-            elseif mouseOverShop then
-                game_state = 'shop'
+                score = score + scoreAddition
                 sound:play()
             end
-        end
-        if pointInsideRect(x, y, switch.x, switch.y, switch.width, switch.height) then
-                toggleSwitch()
         end
     end
 end
@@ -161,9 +95,6 @@ function love.update(dt)
         -- Check if the mouse is over the image
         mouseOverImage = mouseX > imageX and mouseX < imageX + imageWidth and mouseY > imageY and mouseY < imageY + imageHeight
 
-        mouseOverSettings = mouseX > SettingsButX and mouseX < SettingsButX + imageWidthBut and mouseY > SettingsButY and mouseY < SettingsButY + imageHeightBut
-        
-        mouseOverShop = mouseX > ShopButtonX and mouseX < ShopButtonX + imageWidthShop and mouseY > ShopButtonY and mouseY < ShopButtonY + imageHeightShop
     end
 end
 
@@ -171,12 +102,8 @@ end
 function love.draw()
     if game_state == 'menu' then
         draw_menu()
-    elseif game_state == 'Settings' then
-        draw_how_to_play()
     elseif game_state == 'game' then
         draw_game()
-    elseif game_state == 'shop' then
-        draw_shop()
     end
 end
 
@@ -193,9 +120,9 @@ function draw_menu()
 
     -- Draw game title
     love.graphics.setColor(1, 1, 1, 1)
-    love.graphics.printf("Planet Clicker", 0, 150, window_width, 'center')
-    love.graphics.print("Version: Development", 0, 725, 0, 0.5) -- (Text, PositionX, PositionY, Rotation, Size)
-    love.graphics.print("Made by: Moonwave Studios", 500, 725, 0, 0.5) -- (Text, PositionX, PositionY, Rotation, Size)
+    love.graphics.print("Planet Clicker", 550, 150, 0, 1)
+    love.graphics.print("Version: " .. version .. " Might finish it one day", 0, 725, 0, 0.5) -- (Text, PositionX, PositionY, Rotation, Size)
+    love.graphics.print("Made by: Moonwave Studios", 550, 725, 0, 0.5) -- (Text, PositionX, PositionY, Rotation, Size)
 
     -- Draw menu items
     for i = 1, #menus do
@@ -208,61 +135,21 @@ function draw_menu()
         end
 
         -- Draw this menu item centered
-        love.graphics.printf(menus[i], 0, start_y + font_height * (i-1), window_width, 'center')
+        love.graphics.print(menus[i], 600, start_y + font_height * (i-1), 0, 1)
     end
 end
-
-function draw_how_to_play()
-    -- Draw the switch background
-    love.graphics.setColor(0.5, 0.5, 0.5)
-    love.graphics.rectangle("fill", switch.x, switch.y, switch.width, switch.height, 5, 5)
-
-    -- Draw the switch handle based on its state
-    love.graphics.setColor(1, 1, 1)
-    if switch.isOn then
-        love.graphics.rectangle("fill", switch.x + switch.width - 30, switch.y + 5, 25, switch.height - 10, 5, 5)
-    else
-        love.graphics.rectangle("fill", switch.x + 5, switch.y + 5, 25, switch.height - 10, 5, 5)
-    end
-end
-
--- Function to toggle the switch state
-function toggleSwitch()
-    switch.isOn = not switch.isOn
-end
-
--- Function to check if a point is inside a rectangle
-function pointInsideRect(x, y, rx, ry, rw, rh)
-    return x >= rx and x <= rx + rw and y >= ry and y <= ry + rh
-end
-
 function draw_game()
     love.graphics.setFont(font1)
     love.graphics.draw(background, SettingsButX, SettingsButY, 0, BGscaleX, BGscaleY)
     love.graphics.draw(image, imageX, imageY, 0, scaleX, scaleY)
-    love.graphics.draw(button, SettingsButX, SettingsButY, 0, ButscaleX, ButscaleY)
-    love.graphics.draw(ShopButton, ShopButtonX, ShopButtonY, 0, ShopscaleX, ShopscaleY)
-    love.graphics.print("Technology Points: " .. score, 500, 0, 0, 1) -- (Text, PositionX, PositionY, Rotation, Size)
-end
-
-function draw_shop()
-    love.graphics.setFont(font1)
-    love.graphics.draw(background, SettingsButX, SettingsButY, 0, BGscaleX, BGscaleY)
-    love.graphics.print(score .. " TP", 570, 0, 0, 1) -- (Text, PositionX, PositionY, Rotation, Size)
-    love.graphics.print("2x per click", 0,200,0,1)
-    love.graphics.draw(BuyButton,300,200,0,BuyscaleX,BuyscaleY)
-    love.graphics.print("500 TP", 500, 200,0,1)
+    love.graphics.print("Technology Points: " .. score, 400, 0, 0, 1) -- (Text, PositionX, PositionY, Rotation, Size)
 end
 
 function love.keypressed(key, scan_code, is_repeat)
     if game_state == 'menu' then
         menu_keypressed(key)
-    elseif game_state == 'Settings' then
-        how_to_play_keypressed(key)
     elseif game_state == 'game' then
         game_keypressed(key)
-    elseif game_state == 'shop' then
-        shop_keypressed(key)
     end
 end
 
@@ -286,8 +173,6 @@ function menu_keypressed(key)
     elseif key == 'return' or key == 'kpenter' then
         if menus[selected_menu_item] == 'Play' then
             game_state = 'game'
-        elseif menus[selected_menu_item] == 'Settings' then
-            game_state = 'Settings'
         elseif menus[selected_menu_item] == 'Quit' then
             love.event.quit()
         end
@@ -308,12 +193,6 @@ function game_keypressed(key)
     elseif key == "c" then
         score = 0
         print("Score cleared")
-    end
-end
-
-function shop_keypressed(key)
-    if key == 'escape' then
-        game_state = 'game'
     end
 end
 
