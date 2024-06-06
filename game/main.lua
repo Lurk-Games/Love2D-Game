@@ -113,11 +113,6 @@ function draw_menu()
     local vertical_center = window_height / 2
     local start_y = vertical_center - (font_height * (#menus / 2))
 
-    -- Draw guides to help check if menu items are centered, can remove later
-    -- love.graphics.setColor(1, 1, 1, 0.1)
-    -- love.graphics.line(horizontal_center, 0, horizontal_center, window_height)
-    -- love.graphics.line(0, vertical_center, window_width, vertical_center)
-
     -- Draw game title
     love.graphics.setColor(1, 1, 1, 1)
     love.graphics.print("Planet Clicker", 550, 150, 0, 1)
